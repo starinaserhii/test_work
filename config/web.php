@@ -47,6 +47,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'file/<token:\d+>' =>'site/download'
             ],
         ],
 

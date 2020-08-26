@@ -2,56 +2,37 @@
 
 namespace app\controllers;
 
+use app\models\Source;
+use app\services\GetSourceService;
+use app\services\SetSourceService;
+use app\services\UploadUrlService;
 use Yii;
-use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\web\Response;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
 
 class SiteController extends Controller
 {
     /**
-     * {@inheritdoc}
+     * @var UploadUrlService
      */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
-    }
+    private $uploadUrlService;
 
     /**
-     * {@inheritdoc}
+     * @var GetSourceService
      */
-    public function actions()
+    private $getSourceService;
+
+    /**
+     * @var SetSourceService
+     */
+    private $setSourceService;
+
+    public function __construct($id, $module, UploadUrlService $uploadUrlService, GetSourceService $getSourceService, SetSourceService $setSourceService, $config = [])
     {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
-        ];
+        parent::__construct($id, $module, $config);
+        $this->uploadUrlService = $uploadUrlService;
+        $this->getSourceService = $getSourceService;
+        $this->setSourceService = $setSourceService;
     }
 
     /**
@@ -61,69 +42,32 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-
-        return $this->render('index');
-    }
-
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+        $model = new Source();
+        if(Yii::$app->request->isPost ){
+            $post = Yii::$app->request->post();
+            $this->uploadUrlService->create($post["Source"]);
         }
+        $tableObjects = $this->getSourceService->getInfoFromTable();
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+        return $this->render('index',
+            [
+                'model' => $model,
+                'tableObjects' => $tableObjects
+            ]);
+    }
+
+    public function actionDownload()
+    {
+        $token = Yii::$app->request->get('token');
+        /**
+         * @var Source $modelSource
+         */
+        $modelSource = $this->getSourceService->getUrl($token);
+        if($modelSource === null){
+            return $this->redirect('/');
         }
+        $this->setSourceService->addCounter($modelSource->id);
 
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Logout action.
-     *
-     * @return Response
-     */
-    public function actionLogout()
-    {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
+        return $this->redirect($modelSource->url);
     }
 }

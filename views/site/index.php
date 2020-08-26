@@ -1,52 +1,52 @@
 <?php
 
 /* @var $this yii\web\View */
-
+use yii\widgets\ActiveForm;
+use yii\helpers\Html;
+use app\models\Source;
+use yii\helpers\Url;
 $this->title = 'Загрузка ссылок';
 ?>
 <div class="site-index">
-
-    <div class="jumbotron">
-        <h1>Congratulations!</h1>
-
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
-
     <div class="body-content">
+        <div class="index">
+            <?php $form = ActiveForm::begin([
+                'id' => 'call_data',
+                'action' => ['/'],
+            ]); ?>
 
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
+            <?= $form->field($model, 'url')->textInput() ?>
+            <?= $form->field($model, 'datetime_life')->textInput() ?>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
+            <div class="form-group">
+                <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
             </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
+            <?php ActiveForm::end(); ?>
+        </div>
+        <div class="table">
+        <table class="table">
+            <thead>
+            <th>Counter</th>
+            <th>Короткий url</th>
+            <th>Url</th>
+            </thead>
+            <tbody>
+                <?php if(!empty($tableObjects)){ ?>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
+                    <?php
+                    /**
+                     * @var Source $sourceModel
+                     */
+                    foreach ($tableObjects as $sourceModel){ ?>
+                        <tr>
+                            <td><?= $sourceModel->counter ?></td>
+                            <td><?= Url::home(true) . 'file/' .  $sourceModel->token_url ?></td>
+                            <td><?= $sourceModel->url ?></td>
+                        </tr>
+                    <?php } ?>
+                <?php } ?>
+            </tbody>
+        </table>
         </div>
 
     </div>

@@ -18,7 +18,7 @@ class m200826_173824_create_table_source extends Migration
             'id_url' => $this->integer()->unsigned()->notNull()->comment('Иденитификатор url'),
             'token_url' => $this->string(50)->notNull()->comment('Token ссылки'),
             'datetime_life' => $this->dateTime()->notNull()->comment('Время окончания жизни url'),
-            'counter' => $this->integer()->unsigned()->notNull()->comment('Количество использований короткого url')
+            'counter' => $this->integer()->unsigned()->defaultValue(0)->notNull()->comment('Количество использований короткого url')
         ]);
         $this->createIndex(
             'ix__source__id_url',
