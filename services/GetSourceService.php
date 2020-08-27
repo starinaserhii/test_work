@@ -12,6 +12,7 @@ class GetSourceService
 {
 
     /**
+     *  Получение информации для загрузки таблицы всех записей
      * @return array|ActiveRecord[]
      */
     public function getInfoFromTable(): array
@@ -24,7 +25,8 @@ class GetSourceService
     }
 
     /**
-     * @param string $token
+     *  Проверка и получение активного url
+     * @param string $token - токен короткой ссылки
      * @return ActiveRecord|null
      */
     public function getUrl(string $token): ?ActiveRecord

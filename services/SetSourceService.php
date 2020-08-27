@@ -8,6 +8,10 @@ use app\models\Source;
 
 class SetSourceService
 {
+    /**
+     *  Обновление счетчика каунтера
+     * @param int $id
+     */
     public function addCounter(int $id)
     {
         $post = Source::findOne($id);

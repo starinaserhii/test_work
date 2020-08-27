@@ -9,6 +9,11 @@ use app\models\Url;
 
 class UploadUrlService
 {
+    /**
+     *  Сохранение новой ссылки
+     * @param array $form - массив из формы
+     * @return string|null
+     */
     public function create(array $form): ?string
     {
         $modelUrl = new Url();

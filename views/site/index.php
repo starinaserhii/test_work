@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 use yii\helpers\Html;
 use app\models\Source;
 use yii\helpers\Url;
+use kartik\datetime\DateTimePicker;
 $this->title = 'Загрузка ссылок';
 ?>
 <div class="site-index">
@@ -16,8 +17,14 @@ $this->title = 'Загрузка ссылок';
             ]); ?>
 
             <?= $form->field($model, 'url')->textInput() ?>
-            <?= $form->field($model, 'datetime_life')->textInput() ?>
-
+            <?= $form->field($model, 'datetime_life')->widget(DateTimePicker::className(), [
+                'name' => 'datetime_life',
+                'options' => ['placeholder' => 'Select operating time ...'],
+                'convertFormat' => true,
+                'pluginOptions' => [
+                    'format' => 'dd.MM.yyyy H:i'
+                ]
+            ]) ?>
             <div class="form-group">
                 <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
             </div>

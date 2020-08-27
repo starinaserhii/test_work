@@ -37,6 +37,7 @@ class Source extends \yii\db\ActiveRecord
             [['counter'], 'default', 'value' => 0],
             [['datetime_life'], 'safe'],
             [['token_url'], 'string', 'max' => 50],
+            [['url'], 'url'],
             [['id_url'], 'exist', 'skipOnError' => true, 'targetClass' => Url::className(), 'targetAttribute' => ['id_url' => 'id']],
         ];
     }
